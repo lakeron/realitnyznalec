@@ -1,0 +1,5 @@
+.env
+.review-anvil/
+.claude/
+.posthog-events.json
+.posthog-wizard
