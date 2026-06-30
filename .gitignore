@@ -3,3 +3,8 @@
 .claude/
 .posthog-events.json
 .posthog-wizard
+
+# build/test artifacts
+.playwright-mcp/
+cta.png
+marketing-plan.md
