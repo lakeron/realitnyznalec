@@ -16,7 +16,7 @@
 <meta property="og:url" content="https://www.realitnyznalec.sk/">
 <meta property="og:site_name" content="realitnyznalec.sk">
 
-<!-- Schema.org: LocalBusiness — pre Google aj AI vyhľadávanie -->
+<!-- Schema.org: ProfessionalService — pre Google aj AI vyhľadávanie -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -73,6 +73,9 @@
   .skip-link{position:absolute;left:-9999px;top:auto;z-index:100;background:var(--brand);color:#fff;
              padding:10px 16px;border-radius:0 0 8px 0;font-weight:700;text-decoration:none;}
   .skip-link:focus{left:0;top:0;}
+  /* main is focusable (tabindex=-1) only so the skip link can move focus into
+     it; suppress the focus ring since it is a programmatic, not tab, target. */
+  main:focus{outline:none;}
 
   /* Sticky header */
   .nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
@@ -341,16 +344,17 @@
   posthog.init("phc_v88R53LfS9cJbhZW7nfePhgNR2pZyv2U7uqHo8chm7gE", {
     api_host: "https://eu.i.posthog.com",
     defaults: "2026-05-30",
-    // Keep visitor PII out of analytics: the contact controls carry the phone
-    // number / e-mail in element text, href (tel:/mailto:) and data-copy/
-    // aria-label attributes. Autocapture would otherwise record those on click.
-    autocapture: {
-      element_attribute_ignorelist: ["data-copy", "aria-label", "href", "title"],
-    },
+    // Keep visitor PII out of analytics. The contact controls carry the phone
+    // number / e-mail in element text and attributes (href tel:/mailto:,
+    // data-copy, aria-label). Masking every attribute value and all autocapture
+    // text keeps those out of captured events — a blanket attribute mask is
+    // stronger than an attribute ignorelist, so no explicit ignorelist is kept.
     mask_all_element_attributes: true,
-    // Autocapture also records the clicked element's text ($el_text); the
-    // contact phone/e-mail are visible link/value text, so mask text too.
     mask_all_text: true,
+    // No session replay on this landing page — state it explicitly so a
+    // project-level replay rollout can never record the on-page contact PII
+    // (mask_all_text covers autocapture only, not replay).
+    disable_session_recording: true,
   });
 </script>
 </head>
@@ -372,7 +376,7 @@
   </div>
 </header>
 
-<main id="obsah">
+<main id="obsah" tabindex="-1">
 
 <!-- HERO -->
 <section class="hero">
@@ -587,29 +591,37 @@
 </footer>
 
 <script>
-  // Phone call tracking
-  document.querySelectorAll('a[href^="tel:"]').forEach(function(el) {
-    el.addEventListener('click', function() {
-      posthog.capture('phone_call_clicked', {
-        location: el.closest('section, header, footer') ? (el.closest('section, header, footer').id || el.closest('section, header, footer').className.split(' ')[0]) : 'unknown',
-      });
-    });
-  });
+  // Never let an unavailable/throwing analytics global break a user-facing
+  // handler (e.g. an ad blocker stubs or removes posthog). All manual events
+  // go through this wrapper so a failed capture is swallowed, not propagated.
+  function safeCapture(event, props) {
+    try {
+      if (window.posthog && typeof posthog.capture === 'function') {
+        posthog.capture(event, props);
+      }
+    } catch (e) { /* analytics must never break the page */ }
+  }
 
-  // WhatsApp tracking
-  document.querySelectorAll('a[href*="wa.me"]').forEach(function(el) {
-    el.addEventListener('click', function() {
-      posthog.capture('whatsapp_clicked', {
-        location: el.closest('section, header, footer') ? (el.closest('section, header, footer').id || el.closest('section, header, footer').className.split(' ')[0]) : 'unknown',
-      });
-    });
-  });
+  // Nearest section/header/footer label for a clicked element. closest() is
+  // evaluated once; an element with neither id nor class (e.g. <footer>) falls
+  // back to its tag name rather than reporting an empty location.
+  function sectionOf(el) {
+    var s = el.closest('section, header, footer');
+    if (!s) return 'unknown';
+    return s.id || s.className.split(' ')[0] || s.tagName.toLowerCase();
+  }
 
-  // Email tracking
-  document.querySelectorAll('a[href^="mailto:"]').forEach(function(el) {
-    el.addEventListener('click', function() {
-      posthog.capture('email_clicked', {
-        location: el.closest('section, header, footer') ? (el.closest('section, header, footer').id || el.closest('section, header, footer').className.split(' ')[0]) : 'unknown',
+  // Contact-link click tracking — same handler shape, one row per channel.
+  // The hero call button is excluded: on desktop it copies instead of dialing,
+  // so it logs its own event (handled below) rather than a phone_call_clicked.
+  [
+    ['a[href^="tel:"]:not(.hero-call)', 'phone_call_clicked'],
+    ['a[href*="wa.me"]',   'whatsapp_clicked'],
+    ['a[href^="mailto:"]', 'email_clicked'],
+  ].forEach(function(row) {
+    document.querySelectorAll(row[0]).forEach(function(el) {
+      el.addEventListener('click', function() {
+        safeCapture(row[1], { location: sectionOf(el) });
       });
     });
   });
@@ -619,7 +631,7 @@
     el.addEventListener('toggle', function() {
       if (el.open) {
         var question = el.querySelector('summary');
-        posthog.capture('faq_expanded', {
+        safeCapture('faq_expanded', {
           question: question ? question.textContent.trim() : '',
         });
       }
@@ -647,6 +659,10 @@
     function copied() {
       safeCapture('contact_copied', { contact_type: 'phone', location: loc });
       callBtn.innerHTML = '<span aria-hidden="true">✓</span> Skopírované';
+      // Announce through the shared live region — swapping the button's own
+      // text is not reliably read out by screen readers (same reason the
+      // contact-card copy path uses copyStatus).
+      if (typeof copyStatus !== 'undefined') copyStatus.textContent = 'Skopírované: ' + num;
       if (resetTimer) clearTimeout(resetTimer);
       resetTimer = setTimeout(function(){ callBtn.innerHTML = label; }, 1600);
     }
@@ -664,7 +680,7 @@
   var quoteBtn = document.querySelector('.btn-ghost[href="#kontakt"]');
   if (quoteBtn) {
     quoteBtn.addEventListener('click', function() {
-      posthog.capture('quote_requested', { source: 'hero_cta' });
+      safeCapture('quote_requested', { source: 'hero_cta' });
     });
   }
 
@@ -674,7 +690,7 @@
     var ctaObserver = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
-          posthog.capture('cta_band_viewed');
+          safeCapture('cta_band_viewed');
           ctaObserver.disconnect();
         }
       });
@@ -814,11 +830,18 @@
     function render() {
       syncFields();
       var r = compute();
-      // Live slider labels — show "max+" at the top of each range
-      floorValEl.textContent = (parseFloat(floorEl.value) >= FLOOR_MAX ? fmt(FLOOR_MAX) + '+' : fmt(parseFloat(floorEl.value))) + ' m²';
-      landValEl.textContent = (parseFloat(landEl.value) >= LAND_MAX ? fmt(LAND_MAX) + '+' : fmt(parseFloat(landEl.value))) + ' m²';
+      // Live slider labels — show "max+" at the top of each range (same
+      // formatting as the enquiry message, via the shared areaLabel helper)
+      floorValEl.textContent = areaLabel(parseFloat(floorEl.value), FLOOR_MAX);
+      landValEl.textContent = areaLabel(parseFloat(landEl.value), LAND_MAX);
       amountEl.textContent = fmt(r.low) + ' – ' + fmt(r.high) + ' €';
+      // A maxed-out slider caps the surcharge, so the estimate stops growing
+      // while the "500+/5000+" label implies it keeps going — say so explicitly
+      // for larger properties instead of silently quoting the capped value.
+      var atMax = (r.floor != null && parseFloat(floorEl.value) >= FLOOR_MAX)
+               || (r.land  != null && parseFloat(landEl.value)  >= LAND_MAX);
       hintEl.textContent = (r.speed === 'expres' ? 'Expresný termín (do 48 h). ' : '')
+        + (atMax ? 'Pri väčších nehnuteľnostiach cenu určím individuálne. ' : '')
         + 'Vrátane DPH. Konečnú cenu potvrdím po obhliadke.';
       return r;
     }
@@ -834,7 +857,7 @@
       var r = render();
       if (!usedTracked) {
         usedTracked = true;
-        posthog.capture('price_calculator_used', { property_type: r.type });
+        safeCapture('price_calculator_used', { property_type: r.type });
       }
       // Keep the e-mail / WhatsApp prefill in sync with the latest inputs
       applyPrefill();
@@ -847,7 +870,7 @@
     // Track the estimate carried to the contact CTA
     ctaEl.addEventListener('click', function() {
       var r = compute();
-      posthog.capture('price_estimate_cta_clicked', {
+      safeCapture('price_estimate_cta_clicked', {
         property_type: r.type,
         speed: r.speed,
         floor_area: r.floor,
@@ -860,45 +883,67 @@
 </script>
 
 <script>
+  // Single shared live region for copy confirmations. Announcing through the
+  // button itself does not work: its accessible name is fixed by aria-label,
+  // so a polite live update to the button text is not reliably read out.
+  var copyStatus = document.createElement('div');
+  copyStatus.setAttribute('role', 'status');
+  copyStatus.setAttribute('aria-live', 'polite');
+  copyStatus.style.cssText = 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;';
+  document.body.appendChild(copyStatus);
+
   document.querySelectorAll('.act-copy').forEach(function(btn){
-    // Announce the "copied" state change to screen readers
-    btn.setAttribute('aria-live', 'polite');
     var text = btn.getAttribute('data-copy');
     btn.setAttribute('aria-label', 'Kopírovať ' + text);
 
+    var resetTimer = null;
     function flashCopied(){
       var orig = btn.getAttribute('data-label') || btn.textContent;
       btn.setAttribute('data-label', orig);
       btn.textContent = 'Skopírované ✓';
       btn.classList.add('copied');
-      setTimeout(function(){ btn.textContent = orig; btn.classList.remove('copied'); }, 1600);
+      // A rapid second copy must not let the first timeout clear the new state.
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(function(){ btn.textContent = orig; btn.classList.remove('copied'); }, 1600);
+    }
+
+    // Report the conversion and flash success only after the copy is confirmed,
+    // so a denied clipboard does not record a false "copied" event or show a
+    // success label for text that never reached the clipboard.
+    function onCopied(){
+      safeCapture('contact_copied', { contact_type: /@/.test(text) ? 'email' : 'phone' });
+      flashCopied();
+      copyStatus.textContent = 'Skopírované: ' + text;
     }
 
     btn.addEventListener('click', function(){
-      // Copying a contact detail is a silent conversion action — track it
-      posthog.capture('contact_copied', {
-        contact_type: /@/.test(text) ? 'email' : 'phone',
-      });
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(flashCopied).catch(function(){ legacyCopy(text, flashCopied); });
+        navigator.clipboard.writeText(text).then(onCopied).catch(function(){ legacyCopy(text, onCopied); });
       } else {
-        legacyCopy(text, flashCopied);
+        legacyCopy(text, onCopied);
       }
     });
   });
 
-  // Fallback copy for browsers without the async clipboard API
+  // Fallback copy for browsers without the async clipboard API. Calls done()
+  // only when execCommand reports the copy actually happened.
   function legacyCopy(text, done){
+    var prevFocus = document.activeElement;
+    var ta = null;
     try {
-      var ta = document.createElement('textarea');
+      ta = document.createElement('textarea');
       ta.value = text; ta.setAttribute('readonly', '');
       ta.style.position = 'absolute'; ta.style.left = '-9999px';
       document.body.appendChild(ta);
       ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      done();
+      if (document.execCommand('copy')) done();
     } catch (e) { /* copy not supported — silently ignore */ }
+    finally {
+      // Always remove the temp node (even if select/execCommand threw) and
+      // restore focus to the button the user actually pressed.
+      if (ta && ta.parentNode) ta.parentNode.removeChild(ta);
+      if (prevFocus && typeof prevFocus.focus === 'function') prevFocus.focus();
+    }
   }
 </script>
 </body>
