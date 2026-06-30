@@ -6,12 +6,15 @@
 <title>Znalecký posudok nehnuteľností Rimavská Sobota | Ing. Milan Valigurský — súdny znalec</title>
 <meta name="description" content="Súdny znalec na odhad hodnoty nehnuteľností v Rimavskej Sobote a okolí. Znalecké posudky na predaj, hypotéku, dedičské konanie, rozvod, súd a darovanie. Vyše 23 rokov praxe. Zavolajte +421 907 816 517.">
 <meta name="keywords" content="znalecký posudok nehnuteľnosti Rimavská Sobota, znalec nehnuteľnosti, odhad hodnoty nehnuteľnosti, ohodnotenie bytu, ohodnotenie domu, znalecký posudok dedičské konanie, posudok na hypotéku">
+<link rel="canonical" href="https://www.realitnyznalec.sk/">
 
 <!-- Open Graph -->
 <meta property="og:title" content="Ing. Milan Valigurský — súdny znalec, odhad hodnoty nehnuteľností Rimavská Sobota">
 <meta property="og:description" content="Úradne platné znalecké posudky nehnuteľností. Predaj, hypotéka, dedičstvo, rozvod, súd. Vyše 23 rokov praxe.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="sk_SK">
+<meta property="og:url" content="https://www.realitnyznalec.sk/">
+<meta property="og:site_name" content="realitnyznalec.sk">
 
 <!-- Schema.org: LocalBusiness — pre Google aj AI vyhľadávanie -->
 <script type="application/ld+json">
@@ -20,6 +23,7 @@
   "@type": "ProfessionalService",
   "name": "Ing. Milan Valigurský",
   "description": "Súdny znalec v odbore stavebníctvo, odvetvie odhad hodnoty nehnuteľností. Znalecké posudky na byty, domy, pozemky a budovy v Rimavskej Sobote a okolí.",
+  "url": "https://www.realitnyznalec.sk/",
   "telephone": "+421907816517",
   "email": "milan.valigursky@gmail.com",
   "address": {
@@ -170,7 +174,7 @@
   @media(max-width:520px){.calc{padding:24px 18px 28px;}}
   .calc .field{margin-bottom:22px;}
   .calc .field:last-of-type{margin-bottom:0;}
-  .calc label.q{display:block;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:10px;}
+  .calc .q{display:block;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:10px;}
   .calc .opts{display:flex;flex-wrap:wrap;gap:10px;}
   .calc .opts input{position:absolute;opacity:0;width:0;height:0;}
   .calc .opts label{display:inline-block;margin:0;cursor:pointer;font-weight:600;font-size:14.5px;
@@ -184,7 +188,7 @@
   /* Mobile: pack the choice pills into a tidy 2-column grid instead of uneven wrapping */
   @media(max-width:520px){
     .calc .field{margin-bottom:16px;}
-    .calc label.q{margin-bottom:8px;}
+    .calc .q{margin-bottom:8px;}
     .calc .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
     /* Each pill fills its cell and centers its text both ways, so short labels
        (e.g. "Pozemok") stay centered even when a neighbour wraps to two lines */
@@ -334,6 +338,9 @@
       element_attribute_ignorelist: ["data-copy", "aria-label", "href", "title"],
     },
     mask_all_element_attributes: true,
+    // Autocapture also records the clicked element's text ($el_text); the
+    // contact phone/e-mail are visible link/value text, so mask text too.
+    mask_all_text: true,
   });
 </script>
 </head>
@@ -428,7 +435,7 @@
     </div>
     <form class="calc" id="calcForm" novalidate>
       <div class="field">
-        <span class="q" id="lbl-type" style="display:block;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:10px;">Typ nehnuteľnosti</span>
+        <span class="q" id="lbl-type">Typ nehnuteľnosti</span>
         <div class="opts" role="radiogroup" aria-labelledby="lbl-type">
           <input type="radio" name="ptype" id="t-byt" value="byt" checked><label for="t-byt">Byt</label>
           <input type="radio" name="ptype" id="t-dom" value="dom"><label for="t-dom">Rodinný dom</label>
@@ -458,7 +465,7 @@
       </div>
 
       <div class="field">
-        <span class="q" id="lbl-speed" style="display:block;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:10px;">Termín dodania</span>
+        <span class="q" id="lbl-speed">Termín dodania</span>
         <div class="opts opts-speed" role="radiogroup" aria-labelledby="lbl-speed">
           <input type="radio" name="speed" id="s-bezny" value="bezny" checked><label for="s-bezny">Bežný <span class="time">cca 5–10 dní</span></label>
           <input type="radio" name="speed" id="s-expres" value="expres"><label for="s-expres">Expresný <span class="time">do 48 h</span></label>
@@ -552,7 +559,8 @@
       <div>
         <h4>Kontakt</h4>
         Mobil: <a href="tel:+421907816517">+421 907 816 517</a><br>
-        E-mail: <a href="mailto:milan.valigursky@gmail.com">milan.valigursky@gmail.com</a>
+        E-mail: <a href="mailto:milan.valigursky@gmail.com">milan.valigursky@gmail.com</a><br>
+        Web: <a href="https://www.realitnyznalec.sk/">www.realitnyznalec.sk</a>
       </div>
       <div>
         <h4>Adresa</h4>
@@ -562,7 +570,8 @@
     </div>
     <div class="reg">
       Znalec zapísaný v zozname znalcov, tlmočníkov a prekladateľov Ministerstva spravodlivosti SR.
-      Pôsobnosť: Rimavská Sobota, Tornaľa, Hnúšťa, Jelšava, Revúca, Fiľakovo, Lučenec, Halič, Poltár a okolie.
+      Pôsobnosť: Rimavská Sobota, Tornaľa, Hnúšťa, Jelšava, Revúca, Fiľakovo, Lučenec, Halič, Poltár a okolie.<br>
+      © 2026 realitnyznalec.sk — Ing. Milan Valigurský. Všetky práva vyhradené.
     </div>
   </div>
 </footer>
