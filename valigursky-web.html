@@ -62,6 +62,14 @@
   a{color:inherit}
   .wrap{max-width:1000px;margin:0 auto;padding:0 22px;}
 
+  /* Offset in-page anchors so the sticky 64px header does not cover the target heading */
+  section[id]{scroll-margin-top:80px;}
+
+  /* Skip link — visible only on keyboard focus */
+  .skip-link{position:absolute;left:-9999px;top:auto;z-index:100;background:var(--brand);color:#fff;
+             padding:10px 16px;border-radius:0 0 8px 0;font-weight:700;text-decoration:none;}
+  .skip-link:focus{left:0;top:0;}
+
   /* Sticky header */
   .nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
        border-bottom:1px solid var(--line);}
@@ -236,33 +244,38 @@
 </head>
 <body>
 
+<a class="skip-link" href="#obsah">Preskočiť na obsah</a>
+
 <!-- NAV -->
 <header class="nav">
   <div class="wrap">
     <div class="brand">Ing. Milan Valigurský<small>súdny znalec · odhad hodnoty nehnuteľností</small></div>
     <nav class="links">
       <a href="#kedy">Kedy posudok</a>
+      <a href="#kalkulacka">Cena posudku</a>
       <a href="#preco">Prečo ja</a>
       <a href="#faq">Otázky</a>
-      <a class="call" href="tel:+421907816517">📞 Zavolať</a>
+      <a class="call" href="tel:+421907816517"><span aria-hidden="true">📞</span> Zavolať</a>
     </nav>
   </div>
 </header>
 
+<main id="obsah">
+
 <!-- HERO -->
 <section class="hero">
   <div class="wrap">
-    <span class="badge">🏅 Súdny znalec MS SR · ev. č. 914156 · od roku 2002</span>
+    <span class="badge"><span aria-hidden="true">🏅</span> Súdny znalec MS SR · ev. č. 914156 · od roku 2002</span>
     <h1>Znalecký posudok na nehnuteľnosť v Rimavskej Sobote a okolí</h1>
     <p class="lead">Rýchlo a spoľahlivo zistím úradne platnú hodnotu vášho bytu, domu, pozemku či budovy — pre banku, notára, súd aj úrad.</p>
     <div class="cta-row">
-      <a class="btn btn-primary" href="tel:+421907816517">📞 +421 907 816 517</a>
+      <a class="btn btn-primary" href="tel:+421907816517"><span aria-hidden="true">📞</span> +421 907 816 517</a>
       <a class="btn btn-ghost" href="#kontakt">Nezáväzná cenová ponuka</a>
     </div>
     <div class="trust">
-      <span>✔ Vyše 23 rokov praxe</span>
-      <span>✔ Akceptované bankami a súdmi v celej SR</span>
-      <span>✔ Poistená zodpovednosť za škodu</span>
+      <span><span aria-hidden="true">✔</span> Vyše 23 rokov praxe</span>
+      <span><span aria-hidden="true">✔</span> Akceptované bankami a súdmi v celej SR</span>
+      <span><span aria-hidden="true">✔</span> Poistená zodpovednosť za škodu</span>
     </div>
   </div>
 </section>
@@ -275,12 +288,12 @@
       <p>Ak riešite niektorú z týchto situácií, pripravím vám právne platné ohodnotenie nehnuteľnosti.</p>
     </div>
     <div class="grid">
-      <div class="tile"><div class="ic">🏠</div><h3>Predaj alebo kúpa</h3><p>Potrebujete poznať reálnu trhovú hodnotu bytu, domu či pozemku pred predajom alebo kúpou.</p></div>
-      <div class="tile"><div class="ic">🏦</div><h3>Hypotéka</h3><p>Banka vyžaduje stanovenie všeobecnej hodnoty nehnuteľnosti k schváleniu úveru.</p></div>
-      <div class="tile"><div class="ic">⚖️</div><h3>Dedičské konanie</h3><p>Notár potrebuje znalecký posudok na ohodnotenie nehnuteľnosti v pozostalosti.</p></div>
-      <div class="tile"><div class="ic">💔</div><h3>Rozvod a vyporiadanie BSM</h3><p>Spravodlivé rozdelenie spoločnej nehnuteľnosti pri vyporiadaní majetku.</p></div>
-      <div class="tile"><div class="ic">📋</div><h3>Súd a exekúcia</h3><p>Právne platný podklad pre súdny spor alebo pre exekučné konanie.</p></div>
-      <div class="tile"><div class="ic">🎁</div><h3>Darovanie a prevod</h3><p>Podklad pre úrady a daňové účely pri darovaní alebo prevode v rodine.</p></div>
+      <div class="tile"><div class="ic" aria-hidden="true">🏠</div><h3>Predaj alebo kúpa</h3><p>Potrebujete poznať reálnu trhovú hodnotu bytu, domu či pozemku pred predajom alebo kúpou.</p></div>
+      <div class="tile"><div class="ic" aria-hidden="true">🏦</div><h3>Hypotéka</h3><p>Banka vyžaduje stanovenie všeobecnej hodnoty nehnuteľnosti k schváleniu úveru.</p></div>
+      <div class="tile"><div class="ic" aria-hidden="true">⚖️</div><h3>Dedičské konanie</h3><p>Notár potrebuje znalecký posudok na ohodnotenie nehnuteľnosti v pozostalosti.</p></div>
+      <div class="tile"><div class="ic" aria-hidden="true">💔</div><h3>Rozvod a vyporiadanie BSM</h3><p>Spravodlivé rozdelenie spoločnej nehnuteľnosti pri vyporiadaní majetku.</p></div>
+      <div class="tile"><div class="ic" aria-hidden="true">📋</div><h3>Súd a exekúcia</h3><p>Právne platný podklad pre súdny spor alebo pre exekučné konanie.</p></div>
+      <div class="tile"><div class="ic" aria-hidden="true">🎁</div><h3>Darovanie a prevod</h3><p>Podklad pre úrady a daňové účely pri darovaní alebo prevode v rodine.</p></div>
     </div>
   </div>
 </section>
@@ -301,12 +314,12 @@
   <div class="wrap">
     <div class="sec-head"><h2>Prečo si vybrať mňa</h2></div>
     <div class="list">
-      <div class="item"><div class="check">✓</div><div><h4>Vyše 23 rokov praxe</h4><p>Súdnym znalcom nepretržite od roku 2002.</p></div></div>
-      <div class="item"><div class="check">✓</div><div><h4>Miestna znalosť trhu</h4><p>Poznám trh v okrese Rimavská Sobota a okolí.</p></div></div>
-      <div class="item"><div class="check">✓</div><div><h4>Platné v celej SR</h4><p>Posudok akceptujú banky, notári, úrady aj súdy.</p></div></div>
-      <div class="item"><div class="check">✓</div><div><h4>Poistená zodpovednosť</h4><p>Mám platné poistenie zodpovednosti za škodu.</p></div></div>
-      <div class="item"><div class="check">✓</div><div><h4>Osobný prístup</h4><p>Komunikujem priamo s vami, bez sprostredkovateľov.</p></div></div>
-      <div class="item"><div class="check">✓</div><div><h4>Úradné oprávnenie</h4><p>Zapísaný v zozname znalcov MS SR, ev. č. 914156.</p></div></div>
+      <div class="item"><div class="check" aria-hidden="true">✓</div><div><h4>Vyše 23 rokov praxe</h4><p>Súdnym znalcom nepretržite od roku 2002.</p></div></div>
+      <div class="item"><div class="check" aria-hidden="true">✓</div><div><h4>Miestna znalosť trhu</h4><p>Poznám trh v okrese Rimavská Sobota a okolí.</p></div></div>
+      <div class="item"><div class="check" aria-hidden="true">✓</div><div><h4>Platné v celej SR</h4><p>Posudok akceptujú banky, notári, úrady aj súdy.</p></div></div>
+      <div class="item"><div class="check" aria-hidden="true">✓</div><div><h4>Poistená zodpovednosť</h4><p>Mám platné poistenie zodpovednosti za škodu.</p></div></div>
+      <div class="item"><div class="check" aria-hidden="true">✓</div><div><h4>Osobný prístup</h4><p>Komunikujem priamo s vami, bez sprostredkovateľov.</p></div></div>
+      <div class="item"><div class="check" aria-hidden="true">✓</div><div><h4>Úradné oprávnenie</h4><p>Zapísaný v zozname znalcov MS SR, ev. č. 914156.</p></div></div>
     </div>
   </div>
 </section>
@@ -334,19 +347,19 @@
     </div>
     <div class="cards">
       <a class="card" href="tel:+421907816517" aria-label="Zavolať na +421 907 816 517">
-        <div class="ic">📞</div>
+        <div class="ic" aria-hidden="true">📞</div>
         <span class="label">Telefón</span>
         <span class="value">+421 907 816 517</span>
         <div class="sub">Po–Pia, 8:00–18:00</div>
       </a>
       <a class="card" href="mailto:milan.valigursky@gmail.com" aria-label="Napísať e-mail">
-        <div class="ic">✉️</div>
+        <div class="ic" aria-hidden="true">✉️</div>
         <span class="label">E-mail</span>
         <span class="value email">milan.valigursky@gmail.com</span>
         <div class="sub">Odpoviem zvyčajne do 24 hodín</div>
       </a>
       <a class="card" href="https://wa.me/421907816517" target="_blank" rel="noopener" aria-label="Napísať cez WhatsApp">
-        <div class="ic">💬</div>
+        <div class="ic" aria-hidden="true">💬</div>
         <span class="label">WhatsApp</span>
         <span class="value">+421 907 816 517</span>
         <div class="sub">Napíšte alebo pošlite podklady</div>
@@ -355,6 +368,8 @@
     <div class="note">E-mailom môžete rovno poslať podklady k nehnuteľnosti — list vlastníctva, pôdorys či staršie doklady.</div>
   </div>
 </section>
+
+</main>
 
 <!-- FOOTER -->
 <footer>
@@ -384,7 +399,7 @@
   </div>
 </footer>
 
-<a class="float-call" href="tel:+421907816517" aria-label="Zavolať">📞</a>
+<a class="float-call" href="tel:+421907816517" aria-label="Zavolať"><span aria-hidden="true">📞</span></a>
 
 <script>
   // Phone call tracking
