@@ -79,9 +79,18 @@
   .nav .links{display:flex;gap:22px;align-items:center;font-size:14px;font-weight:600;}
   .nav .links a{color:var(--muted);text-decoration:none;}
   .nav .links a:hover{color:var(--brand);}
-  .nav .call{background:var(--accent);color:#fff;padding:9px 16px;border-radius:999px;text-decoration:none;font-size:14px;}
-  .nav .call:hover{background:var(--accent-d);}
-  @media(max-width:760px){.nav .links a:not(.call){display:none}}
+  .nav .links a.call{display:inline-flex;align-items:center;gap:7px;background:var(--accent);color:#fff;
+                     font-weight:700;padding:9px 16px;border-radius:999px;text-decoration:none;
+                     font-size:14px;white-space:nowrap;}
+  .nav .links a.call:hover{background:var(--accent-d);color:#fff;}
+  @media(max-width:760px){
+    .nav .links a:not(.call){display:none}
+    .nav .wrap{gap:14px}
+    .nav .brand{font-size:15px;min-width:0;line-height:1.2;}
+    /* Keep the subtitle to one tidy line so the brand block stays vertically centered */
+    .nav .brand small{font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+    .nav .links a.call{padding:9px 14px;flex:0 0 auto}
+  }
 
   /* Hero */
   .hero{background:linear-gradient(155deg,var(--brand),var(--brand2));color:#fff;
@@ -101,7 +110,16 @@
   .btn-ghost:hover{background:rgba(255,255,255,.2);}
   .hero .trust{margin-top:30px;display:flex;gap:26px;flex-wrap:wrap;font-size:14px;opacity:.9;}
   .hero .trust span{display:flex;align-items:center;gap:7px;}
-  @media(max-width:600px){.hero h1{font-size:31px}.hero p.lead{font-size:17px}}
+  @media(max-width:600px){
+    .hero h1{font-size:31px}
+    .hero p.lead{font-size:17px}
+    /* Balanced, compact eyebrow badge instead of an uneven 2-line wrap */
+    .hero .badge{font-size:12px;line-height:1.45;padding:7px 16px;text-align:center;
+                 max-width:300px;letter-spacing:0;}
+    /* Stack the CTAs full-width so both buttons line up and read as one tidy block */
+    .hero .cta-row{flex-direction:column;align-items:stretch;gap:12px;}
+    .hero .cta-row .btn{width:100%;justify-content:center;}
+  }
 
   section{padding:64px 0;}
   .sec-head{text-align:center;max-width:680px;margin:0 auto 42px;}
@@ -145,6 +163,51 @@
   details[open] summary::after{content:"–";}
   details p{padding:0 0 18px;color:var(--muted);font-size:15px;}
 
+  /* Price calculator */
+  .calc{max-width:760px;margin:0 auto;background:var(--bg);border:1px solid var(--line);
+        border-radius:18px;padding:30px 30px 34px;box-shadow:0 10px 30px rgba(13,59,102,.06);}
+  @media(max-width:520px){.calc{padding:24px 18px 28px;}}
+  .calc .field{margin-bottom:22px;}
+  .calc .field:last-of-type{margin-bottom:0;}
+  .calc label.q{display:block;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:10px;}
+  .calc .opts{display:flex;flex-wrap:wrap;gap:10px;}
+  .calc .opts input{position:absolute;opacity:0;width:0;height:0;}
+  .calc .opts label{display:inline-block;margin:0;cursor:pointer;font-weight:600;font-size:14.5px;
+                    color:var(--brand);background:var(--soft);border:1px solid var(--line);
+                    border-radius:999px;padding:10px 18px;transition:.15s;}
+  .calc .opts input:checked + label{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .calc .opts input:focus-visible + label{outline:2px solid var(--brand2);outline-offset:2px;}
+  .calc .opts label:hover{border-color:var(--brand2);}
+  .calc input[type=number]{width:100%;font-size:15px;font-family:inherit;color:var(--ink);
+        background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:13px 14px;}
+  .calc input[type=number]:focus{outline:none;border-color:var(--brand2);
+        box-shadow:0 0 0 3px rgba(16,86,143,.12);}
+  /* Area slider */
+  .calc .slider-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+  .calc .slider-head .q{margin-bottom:0;}
+  .calc .slider-val{font-weight:800;font-size:18px;color:var(--brand);letter-spacing:-.01em;}
+  .calc input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;
+        background:var(--line);outline:none;margin:6px 0;cursor:pointer;}
+  .calc input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;
+        border-radius:50%;background:var(--brand);border:3px solid #fff;box-shadow:0 2px 6px rgba(13,59,102,.35);cursor:pointer;}
+  .calc input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--brand);
+        border:3px solid #fff;box-shadow:0 2px 6px rgba(13,59,102,.35);cursor:pointer;}
+  .calc input[type=range]:focus-visible{box-shadow:0 0 0 3px rgba(16,86,143,.18);}
+  .calc .slider-scale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:4px;}
+  .calc .result{margin-top:28px;background:var(--soft);border:1px solid var(--line);border-radius:14px;
+                padding:24px;text-align:center;}
+  .calc .result .label{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+  .calc .result .amount{font-size:34px;font-weight:800;color:var(--brand);letter-spacing:-.02em;margin-top:6px;}
+  .calc .result .hint{font-size:13.5px;color:var(--muted);margin-top:8px;}
+  .calc .result .cta{margin-top:18px;}
+  .calc .disclaimer{display:flex;gap:12px;align-items:flex-start;margin-top:18px;
+        background:#fff7e6;border:1px solid #f0d089;border-left:4px solid #e0a72e;border-radius:12px;
+        padding:14px 16px;font-size:13.5px;color:#7a5a12;line-height:1.5;}
+  .calc .disclaimer .ic{flex:0 0 auto;font-size:18px;line-height:1.4;}
+  .calc .disclaimer strong{color:#5e4509;}
+  .btn-accent{background:var(--accent);color:#fff;box-shadow:0 6px 18px rgba(29,122,70,.28);}
+  .btn-accent:hover{background:var(--accent-d);transform:translateY(-1px);}
+
   /* Contact section */
   .contact{background:linear-gradient(155deg,var(--accent),var(--accent-d));color:#fff;
            position:relative;overflow:hidden;}
@@ -159,20 +222,34 @@
   @media(max-width:760px){.contact .cards{grid-template-columns:1fr}}
   .contact .card{display:flex;flex-direction:column;align-items:center;
                  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);border-radius:18px;
-                 padding:34px 26px;text-align:center;text-decoration:none;color:#fff;
-                 transition:transform .2s ease,box-shadow .2s ease,background .2s ease,border-color .2s ease;
+                 padding:34px 26px;text-align:center;color:#fff;
+                 transition:box-shadow .2s ease,background .2s ease,border-color .2s ease;
                  backdrop-filter:blur(6px);box-shadow:0 4px 18px rgba(0,0,0,.08);}
-  .contact a.card:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.5);
-                        transform:translateY(-4px);box-shadow:0 16px 38px rgba(0,0,0,.22);}
+  .contact .card:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4);
+                       box-shadow:0 16px 38px rgba(0,0,0,.22);}
   .contact .card .ic{width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;
                      display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 18px;
-                     box-shadow:0 0 0 6px rgba(255,255,255,.06);transition:transform .2s ease;}
-  .contact a.card:hover .ic{transform:scale(1.08);}
+                     box-shadow:0 0 0 6px rgba(255,255,255,.06);animation:pulse 2.4s ease-in-out infinite;}
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 0 6px rgba(255,255,255,.06);}
+    50%{box-shadow:0 0 0 12px rgba(255,255,255,.02);}
+  }
+  @media(prefers-reduced-motion:reduce){.contact .card .ic{animation:none;}}
   .contact .card .label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.7);}
   .contact .card .value{display:block;font-size:19px;font-weight:800;color:#fff;margin-top:9px;
-                        line-height:1.35;letter-spacing:-.01em;white-space:nowrap;}
+                        line-height:1.35;letter-spacing:-.01em;white-space:nowrap;
+                        user-select:all;-webkit-user-select:all;cursor:text;}
   .contact .card .value.email{font-size:15.5px;letter-spacing:0;}
   .contact .card .sub{font-size:13.5px;color:rgba(255,255,255,.78);margin-top:8px;}
+  .contact .card .acts{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;justify-content:center;}
+  .contact .card .act{display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;
+                      font-size:13.5px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:999px;
+                      cursor:pointer;border:1px solid transparent;transition:.15s;font-family:inherit;}
+  .contact .card .act-main{background:#fff;color:var(--accent-d);}
+  .contact .card .act-main:hover{background:#eafff2;}
+  .contact .card .act-copy{background:transparent;color:#fff;border-color:rgba(255,255,255,.45);}
+  .contact .card .act-copy:hover{background:rgba(255,255,255,.16);}
+  .contact .card .act-copy.copied{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.6);}
   .contact .note{text-align:center;color:rgba(255,255,255,.9);font-size:15px;max-width:560px;margin:34px auto 0;}
 
   /* Contact / footer */
@@ -188,7 +265,11 @@
   /* Floating mobile call button */
   .float-call{position:fixed;bottom:20px;right:20px;z-index:60;background:var(--accent);color:#fff;
               width:60px;height:60px;border-radius:50%;display:none;align-items:center;justify-content:center;
-              font-size:26px;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.3);}
+              font-size:26px;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.3);
+              transition:opacity .25s ease,transform .25s ease;}
+  /* Hide the floating button while a section with its own call CTA is on screen */
+  .float-call.hidden{opacity:0;transform:scale(.6);pointer-events:none;}
+  @media(prefers-reduced-motion:reduce){.float-call{transition:none}}
   @media(max-width:760px){.float-call{display:flex}}
 </style>
 
@@ -239,6 +320,13 @@
   posthog.init("phc_v88R53LfS9cJbhZW7nfePhgNR2pZyv2U7uqHo8chm7gE", {
     api_host: "https://eu.i.posthog.com",
     defaults: "2026-05-30",
+    // Keep visitor PII out of analytics: the contact controls carry the phone
+    // number / e-mail in element text, href (tel:/mailto:) and data-copy/
+    // aria-label attributes. Autocapture would otherwise record those on click.
+    autocapture: {
+      element_attribute_ignorelist: ["data-copy", "aria-label", "href", "title"],
+    },
+    mask_all_element_attributes: true,
   });
 </script>
 </head>
@@ -324,6 +412,67 @@
   </div>
 </section>
 
+<!-- KALKULACKA CENY -->
+<section id="kalkulacka" class="why">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Skúšobný odhad ceny posudku</h2>
+      <p>Vyplňte pár údajov o nehnuteľnosti a hneď uvidíte orientačnú cenu posudku. Presnú cenu vám potvrdím po krátkej obhliadke.</p>
+    </div>
+    <form class="calc" id="calcForm" novalidate>
+      <div class="field">
+        <span class="q" id="lbl-type" style="display:block;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:10px;">Typ nehnuteľnosti</span>
+        <div class="opts" role="radiogroup" aria-labelledby="lbl-type">
+          <input type="radio" name="ptype" id="t-byt" value="byt" checked><label for="t-byt">Byt</label>
+          <input type="radio" name="ptype" id="t-dom" value="dom"><label for="t-dom">Rodinný dom</label>
+          <input type="radio" name="ptype" id="t-pozemok" value="pozemok"><label for="t-pozemok">Pozemok</label>
+          <input type="radio" name="ptype" id="t-komercia" value="komercia"><label for="t-komercia">Komerčná / iná stavba</label>
+        </div>
+      </div>
+
+      <div class="field" id="field-floor">
+        <div class="slider-head">
+          <label class="q" for="floor">Zastavaná / podlahová plocha</label>
+          <span class="slider-val" id="floorVal">70 m²</span>
+        </div>
+        <input type="range" id="floor" name="floor" min="10" max="500" step="5" value="70"
+               aria-describedby="floorVal">
+        <div class="slider-scale"><span>10 m²</span><span>500+ m²</span></div>
+      </div>
+
+      <div class="field" id="field-land" hidden>
+        <div class="slider-head">
+          <label class="q" for="land">Výmera pozemku</label>
+          <span class="slider-val" id="landVal">500 m²</span>
+        </div>
+        <input type="range" id="land" name="land" min="100" max="5000" step="50" value="500"
+               aria-describedby="landVal">
+        <div class="slider-scale"><span>100 m²</span><span>5000+ m²</span></div>
+      </div>
+
+      <div class="field">
+        <span class="q" id="lbl-speed" style="display:block;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:10px;">Termín dodania</span>
+        <div class="opts" role="radiogroup" aria-labelledby="lbl-speed">
+          <input type="radio" name="speed" id="s-bezny" value="bezny" checked><label for="s-bezny">Bežný (cca 5–10 dní)</label>
+          <input type="radio" name="speed" id="s-expres" value="expres"><label for="s-expres">Expresný (do 48 h)</label>
+        </div>
+      </div>
+
+      <div class="result" aria-live="polite">
+        <div class="label">Orientačná cena posudku</div>
+        <div class="amount" id="calcAmount">— €</div>
+        <div class="hint" id="calcHint">Vrátane DPH. Konečnú cenu potvrdím po obhliadke.</div>
+        <a class="btn btn-accent cta" id="calcCta" href="#kontakt">Chcem presnú ponuku</a>
+      </div>
+
+      <p class="disclaimer">
+        <span class="ic" aria-hidden="true">⚠️</span>
+        <span><strong>Len orientačný odhad.</strong> Toto je nezáväzný výpočet z priemerných cien. Skutočná cena závisí od konkrétnej nehnuteľnosti, dostupných podkladov a rozsahu posudku — presnú sumu vám potvrdím po obhliadke.</span>
+      </p>
+    </form>
+  </div>
+</section>
+
 <!-- FAQ -->
 <section id="faq">
   <div class="wrap">
@@ -346,24 +495,36 @@
       <p>Nezáväzne poradím a pripravím cenovú ponuku. Ozvite sa, ako vám to vyhovuje.</p>
     </div>
     <div class="cards">
-      <a class="card" href="tel:+421907816517" aria-label="Zavolať na +421 907 816 517">
+      <div class="card">
         <div class="ic" aria-hidden="true">📞</div>
         <span class="label">Telefón</span>
         <span class="value">+421 907 816 517</span>
         <div class="sub">Po–Pia, 8:00–18:00</div>
-      </a>
-      <a class="card" href="mailto:milan.valigursky@gmail.com" aria-label="Napísať e-mail">
+        <div class="acts">
+          <a class="act act-main" href="tel:+421907816517">Zavolať</a>
+          <button type="button" class="act act-copy" data-copy="+421 907 816 517">Kopírovať</button>
+        </div>
+      </div>
+      <div class="card">
         <div class="ic" aria-hidden="true">✉️</div>
         <span class="label">E-mail</span>
         <span class="value email">milan.valigursky@gmail.com</span>
         <div class="sub">Odpoviem zvyčajne do 24 hodín</div>
-      </a>
-      <a class="card" href="https://wa.me/421907816517" target="_blank" rel="noopener" aria-label="Napísať cez WhatsApp">
+        <div class="acts">
+          <a class="act act-main" href="mailto:milan.valigursky@gmail.com">Napísať</a>
+          <button type="button" class="act act-copy" data-copy="milan.valigursky@gmail.com">Kopírovať</button>
+        </div>
+      </div>
+      <div class="card">
         <div class="ic" aria-hidden="true">💬</div>
         <span class="label">WhatsApp</span>
         <span class="value">+421 907 816 517</span>
         <div class="sub">Napíšte alebo pošlite podklady</div>
-      </a>
+        <div class="acts">
+          <a class="act act-main" href="https://wa.me/421907816517" target="_blank" rel="noopener">Otvoriť</a>
+          <button type="button" class="act act-copy" data-copy="+421 907 816 517">Kopírovať</button>
+        </div>
+      </div>
     </div>
     <div class="note">E-mailom môžete rovno poslať podklady k nehnuteľnosti — list vlastníctva, pôdorys či staršie doklady.</div>
   </div>
@@ -462,7 +623,190 @@
     }, { threshold: 0.3 });
     ctaObserver.observe(ctaBand);
   }
+
+  // Price estimate calculator
+  (function() {
+    var form = document.getElementById('calcForm');
+    if (!form) return;
+
+    var amountEl = document.getElementById('calcAmount');
+    var hintEl = document.getElementById('calcHint');
+    var ctaEl = document.getElementById('calcCta');
+    var floorEl = document.getElementById('floor');
+    var landEl = document.getElementById('land');
+    var floorValEl = document.getElementById('floorVal');
+    var landValEl = document.getElementById('landVal');
+    var floorField = document.getElementById('field-floor');
+    var landField = document.getElementById('field-land');
+    var FLOOR_MAX = parseFloat(floorEl.max);
+    var LAND_MAX = parseFloat(landEl.max);
+
+    // Which sliders each property type uses
+    var TYPES = {
+      byt:      { floor: true,  land: false },
+      dom:      { floor: true,  land: true  },
+      pozemok:  { floor: false, land: true  },
+      komercia: { floor: true,  land: true  },
+    };
+
+    // Base prices (EUR, incl. VAT) per property type
+    var BASE = { byt: 180, dom: 250, pozemok: 150, komercia: 320 };
+
+    // Built / floor area drives the bulk of the work → affects the whole range
+    function floorSurcharge(area) {
+      if (isNaN(area) || area <= 0) return 0;
+      if (area >= 500) return 200;
+      if (area > 200) return 140;
+      if (area > 120) return 80;
+      if (area > 70) return 40;
+      return 0;
+    }
+
+    // Land area grows slowly and only lifts the UPPER limit — a plain parcel
+    // without specialities does not add much work.
+    function landSurchargeHigh(area) {
+      if (isNaN(area) || area <= 0) return 0;
+      return Math.min(150, Math.round((area / 100) * 3)); // ~3 €/100 m², capped at 150 €
+    }
+
+    function val(name) {
+      var el = form.querySelector('input[name="' + name + '"]:checked');
+      return el ? el.value : null;
+    }
+
+    function compute() {
+      var type = val('ptype') || 'byt';
+      var speed = val('speed') || 'bezny';
+      var cfg = TYPES[type] || TYPES.byt;
+      var floor = parseFloat(floorEl.value);
+      var land = parseFloat(landEl.value);
+
+      var base = BASE[type] || 180;
+      if (cfg.floor) base += floorSurcharge(floor);
+
+      var low = base;
+      var high = base * 1.2;
+      // Land only raises the upper limit, slowly
+      if (cfg.land) high += landSurchargeHigh(land);
+
+      var mult = speed === 'expres' ? 1.4 : 1;
+      low *= mult;
+      high *= mult;
+
+      return {
+        low: Math.round(low / 10) * 10,
+        high: Math.round(high / 10) * 10,
+        type: type, speed: speed,
+        floor: cfg.floor ? floor : null,
+        land: cfg.land ? land : null,
+      };
+    }
+
+    function fmt(n) {
+      return n.toLocaleString('sk-SK');
+    }
+
+    function syncFields() {
+      var cfg = TYPES[val('ptype') || 'byt'] || TYPES.byt;
+      floorField.hidden = !cfg.floor;
+      landField.hidden = !cfg.land;
+    }
+
+    function render() {
+      syncFields();
+      var r = compute();
+      // Live slider labels — show "max+" at the top of each range
+      floorValEl.textContent = (parseFloat(floorEl.value) >= FLOOR_MAX ? fmt(FLOOR_MAX) + '+' : fmt(parseFloat(floorEl.value))) + ' m²';
+      landValEl.textContent = (parseFloat(landEl.value) >= LAND_MAX ? fmt(LAND_MAX) + '+' : fmt(parseFloat(landEl.value))) + ' m²';
+      amountEl.textContent = fmt(r.low) + ' – ' + fmt(r.high) + ' €';
+      hintEl.textContent = (r.speed === 'expres' ? 'Expresný termín (do 48 h). ' : '')
+        + 'Vrátane DPH. Konečnú cenu potvrdím po obhliadke.';
+      return r;
+    }
+
+    // Initial render
+    render();
+
+    // Recompute on any change; track the first interaction once
+    var usedTracked = false;
+    function onChange() {
+      var r = render();
+      if (!usedTracked) {
+        usedTracked = true;
+        posthog.capture('price_calculator_used', { property_type: r.type });
+      }
+    }
+    form.addEventListener('change', onChange);
+    // Range fires 'change' only on release — update live while dragging
+    floorEl.addEventListener('input', onChange);
+    landEl.addEventListener('input', onChange);
+
+    // Track the estimate carried to the contact CTA
+    ctaEl.addEventListener('click', function() {
+      var r = compute();
+      posthog.capture('price_estimate_cta_clicked', {
+        property_type: r.type,
+        speed: r.speed,
+        floor_area: r.floor,
+        land_area: r.land,
+        estimate_low: r.low,
+        estimate_high: r.high,
+      });
+    });
+  })();
 </script>
 
+<script>
+  document.querySelectorAll('.act-copy').forEach(function(btn){
+    // Announce the "copied" state change to screen readers
+    btn.setAttribute('aria-live', 'polite');
+    var text = btn.getAttribute('data-copy');
+    btn.setAttribute('aria-label', 'Kopírovať ' + text);
+
+    function flashCopied(){
+      var orig = btn.getAttribute('data-label') || btn.textContent;
+      btn.setAttribute('data-label', orig);
+      btn.textContent = 'Skopírované ✓';
+      btn.classList.add('copied');
+      setTimeout(function(){ btn.textContent = orig; btn.classList.remove('copied'); }, 1600);
+    }
+
+    btn.addEventListener('click', function(){
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(flashCopied).catch(function(){ legacyCopy(text, flashCopied); });
+      } else {
+        legacyCopy(text, flashCopied);
+      }
+    });
+  });
+
+  // Fallback copy for browsers without the async clipboard API
+  function legacyCopy(text, done){
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.position = 'absolute'; ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      done();
+    } catch (e) { /* copy not supported — silently ignore */ }
+  }
+
+  // Hide the floating call button while a section with its own call CTA is visible
+  var floatCall = document.querySelector('.float-call');
+  if (floatCall && 'IntersectionObserver' in window) {
+    var ownCta = [document.querySelector('.hero'), document.getElementById('kontakt')].filter(Boolean);
+    var visible = new Set();
+    var fcObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) visible.add(entry.target); else visible.delete(entry.target);
+      });
+      floatCall.classList.toggle('hidden', visible.size > 0);
+    }, { threshold: 0.2 });
+    ownCta.forEach(function(el){ fcObserver.observe(el); });
+  }
+</script>
 </body>
 </html>
