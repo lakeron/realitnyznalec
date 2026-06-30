@@ -144,6 +144,16 @@
 
   /* Why band */
   .why{background:var(--soft);}
+
+  /* Calculator band — a dark brand strip so the tool reads as its own zone,
+     clearly separated from the soft "Prečo" band that precedes it */
+  .calc-band{background:linear-gradient(155deg,var(--brand),var(--brand2));
+             position:relative;overflow:hidden;}
+  .calc-band::before{content:"";position:absolute;left:-130px;bottom:-150px;width:420px;height:420px;
+                     background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%);pointer-events:none;}
+  .calc-band .wrap{position:relative;z-index:1;}
+  .calc-band .sec-head h2{color:#fff;}
+  .calc-band .sec-head p{color:rgba(255,255,255,.9);}
   .why .list{display:grid;grid-template-columns:repeat(2,1fr);gap:16px 34px;max-width:820px;margin:0 auto;}
   @media(max-width:640px){.why .list{grid-template-columns:1fr}}
   .why .item{display:flex;gap:14px;align-items:flex-start;}
@@ -357,7 +367,7 @@
       <a href="#kalkulacka">Cena posudku</a>
       <a href="#preco">Prečo ja</a>
       <a href="#faq">Otázky</a>
-      <a class="call" href="tel:+421907816517"><span aria-hidden="true">📞</span> Zavolať</a>
+      <a class="call hero-call" href="tel:+421907816517" data-copy="+421 907 816 517"><span aria-hidden="true">📞</span> Zavolať</a>
     </nav>
   </div>
 </header>
@@ -371,8 +381,8 @@
     <h1>Znalecký posudok na nehnuteľnosť v Rimavskej Sobote a okolí</h1>
     <p class="lead">Rýchlo a spoľahlivo zistím úradne platnú hodnotu vášho bytu, domu, pozemku či budovy — pre banku, notára, súd aj úrad.</p>
     <div class="cta-row">
-      <a class="btn btn-primary" href="tel:+421907816517"><span aria-hidden="true">📞</span> +421 907 816 517</a>
-      <a class="btn btn-ghost" href="#kontakt">Nezáväzná cenová ponuka</a>
+      <a class="btn btn-primary hero-call" href="tel:+421907816517" data-copy="+421 907 816 517"><span aria-hidden="true">📞</span> +421 907 816 517</a>
+      <a class="btn btn-ghost" href="#kalkulacka">Nezáväzná cenová ponuka</a>
     </div>
     <div class="trust">
       <span><span aria-hidden="true">✔</span> Vyše 23 rokov praxe</span>
@@ -427,7 +437,7 @@
 </section>
 
 <!-- KALKULACKA CENY -->
-<section id="kalkulacka" class="why">
+<section id="kalkulacka" class="calc-band">
   <div class="wrap">
     <div class="sec-head">
       <h2>Skúšobný odhad ceny posudku</h2>
@@ -616,6 +626,40 @@
     });
   });
 
+  // Call buttons (hero + header): on a phone the tel: link dials as usual. On a
+  // device that can't place calls (typically desktop) dialing is useless, so
+  // intercept the click and copy the number to the clipboard instead.
+  // Desktop has no telephony: treat fine-pointer / hover-capable devices as
+  // "cannot dial" and copy the number there; everything else dials normally.
+  var canDial = !(window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches);
+  document.querySelectorAll('.hero-call').forEach(function(callBtn) {
+    var loc = sectionOf(callBtn);
+    if (canDial) {
+      callBtn.addEventListener('click', function() {
+        safeCapture('phone_call_clicked', { location: loc });
+      });
+      return;
+    }
+    var num = callBtn.getAttribute('data-copy');
+    var label = callBtn.innerHTML;
+    var resetTimer = null;
+    callBtn.setAttribute('title', 'Kliknutím skopírujete číslo');
+    function copied() {
+      safeCapture('contact_copied', { contact_type: 'phone', location: loc });
+      callBtn.innerHTML = '<span aria-hidden="true">✓</span> Skopírované';
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(function(){ callBtn.innerHTML = label; }, 1600);
+    }
+    callBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(num).then(copied).catch(function(){ legacyCopy(num, copied); });
+      } else {
+        legacyCopy(num, copied);
+      }
+    });
+  });
+
   // Quote request (hero ghost CTA)
   var quoteBtn = document.querySelector('.btn-ghost[href="#kontakt"]');
   if (quoteBtn) {
@@ -720,6 +764,47 @@
       return n.toLocaleString('sk-SK');
     }
 
+    // Human-readable labels for the prefilled enquiry message
+    var TYPE_LABELS  = { byt:'Byt', dom:'Rodinný dom', pozemok:'Pozemok', komercia:'Komerčná / iná stavba' };
+    var SPEED_LABELS = { bezny:'Bežný termín (cca 5–10 dní)', expres:'Expresný termín (do 48 h)' };
+
+    function areaLabel(v, max) {
+      return (v >= max ? fmt(max) + '+' : fmt(v)) + ' m²';
+    }
+
+    // Build a ready-to-send enquiry. Once the visitor has touched the
+    // calculator, enrich it with their inputs so they need not type it all.
+    function buildMessage() {
+      var lines = ['Dobrý deň, mám záujem o znalecký posudok na nehnuteľnosť.'];
+      if (usedTracked) {
+        var r = compute();
+        lines.push('', 'Údaje z orientačnej kalkulačky:');
+        lines.push('• Typ nehnuteľnosti: ' + (TYPE_LABELS[r.type] || r.type));
+        if (r.floor != null) lines.push('• Plocha: ' + areaLabel(r.floor, FLOOR_MAX));
+        if (r.land  != null) lines.push('• Výmera pozemku: ' + areaLabel(r.land, LAND_MAX));
+        lines.push('• Termín dodania: ' + (SPEED_LABELS[r.speed] || r.speed));
+        lines.push('• Orientačná cena: ' + fmt(r.low) + ' – ' + fmt(r.high) + ' €');
+      }
+      lines.push('', 'Prosím o nezáväznú cenovú ponuku a termín. Ďakujem.');
+      return { subject: 'Dopyt – znalecký posudok nehnuteľnosti', body: lines.join('\n') };
+    }
+
+    // Prefill subject + body on e-mail links and the message on WhatsApp so a
+    // visitor only has to hit send. Re-run on every change to keep data fresh.
+    function applyPrefill() {
+      var msg = buildMessage();
+      document.querySelectorAll('a[href^="mailto:"]').forEach(function(a) {
+        var addr = (a.getAttribute('href') || '').replace(/^mailto:/, '').split('?')[0];
+        a.setAttribute('href', 'mailto:' + addr
+          + '?subject=' + encodeURIComponent(msg.subject)
+          + '&body=' + encodeURIComponent(msg.body));
+      });
+      document.querySelectorAll('a[href*="wa.me"]').forEach(function(a) {
+        var base = (a.getAttribute('href') || '').split('?')[0];
+        a.setAttribute('href', base + '?text=' + encodeURIComponent(msg.body));
+      });
+    }
+
     function syncFields() {
       var cfg = TYPES[val('ptype') || 'byt'] || TYPES.byt;
       floorField.hidden = !cfg.floor;
@@ -738,8 +823,10 @@
       return r;
     }
 
-    // Initial render
+    // Initial render — prefill contacts with the base enquiry right away, so
+    // even visitors who skip the calculator get a ready-to-send message.
     render();
+    applyPrefill();
 
     // Recompute on any change; track the first interaction once
     var usedTracked = false;
@@ -749,6 +836,8 @@
         usedTracked = true;
         posthog.capture('price_calculator_used', { property_type: r.type });
       }
+      // Keep the e-mail / WhatsApp prefill in sync with the latest inputs
+      applyPrefill();
     }
     form.addEventListener('change', onChange);
     // Range fires 'change' only on release — update live while dragging
