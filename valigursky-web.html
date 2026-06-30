@@ -87,8 +87,9 @@
     .nav .links a:not(.call){display:none}
     .nav .wrap{gap:14px}
     .nav .brand{font-size:15px;min-width:0;line-height:1.2;}
-    /* Keep the subtitle to one tidy line so the brand block stays vertically centered */
-    .nav .brand small{font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+    /* Keep the subtitle to one tidy line; drop the inner word rather than mid-word ellipsis */
+    .nav .brand small{font-size:10.5px;white-space:nowrap;margin-top:2px;}
+    .nav .brand small .brand-long{display:none;}
     .nav .links a.call{padding:9px 14px;flex:0 0 auto}
   }
 
@@ -111,11 +112,11 @@
   .hero .trust{margin-top:30px;display:flex;gap:26px;flex-wrap:wrap;font-size:14px;opacity:.9;}
   .hero .trust span{display:flex;align-items:center;gap:7px;}
   @media(max-width:600px){
-    .hero h1{font-size:31px}
+    .hero h1{font-size:31px;text-align:left;}
     .hero p.lead{font-size:17px}
-    /* Balanced, compact eyebrow badge instead of an uneven 2-line wrap */
-    .hero .badge{font-size:12px;line-height:1.45;padding:7px 16px;text-align:center;
-                 max-width:300px;letter-spacing:0;}
+    /* Pill hugs its text (fit-content) so there's no empty gap on the right */
+    .hero .badge{font-size:12px;line-height:1.45;padding:7px 14px;text-align:center;
+                 width:fit-content;max-width:100%;letter-spacing:0;}
     /* Stack the CTAs full-width so both buttons line up and read as one tidy block */
     .hero .cta-row{flex-direction:column;align-items:stretch;gap:12px;}
     .hero .cta-row .btn{width:100%;justify-content:center;}
@@ -178,6 +179,22 @@
   .calc .opts input:checked + label{background:var(--brand);border-color:var(--brand);color:#fff;}
   .calc .opts input:focus-visible + label{outline:2px solid var(--brand2);outline-offset:2px;}
   .calc .opts label:hover{border-color:var(--brand2);}
+  /* Secondary time text inside the delivery-speed pills */
+  .calc .opts-speed .time{color:inherit;opacity:.75;font-weight:600;}
+  /* Mobile: pack the choice pills into a tidy 2-column grid instead of uneven wrapping */
+  @media(max-width:520px){
+    .calc .field{margin-bottom:16px;}
+    .calc label.q{margin-bottom:8px;}
+    .calc .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+    /* Each pill fills its cell and centers its text both ways, so short labels
+       (e.g. "Pozemok") stay centered even when a neighbour wraps to two lines */
+    .calc .opts label{display:flex;flex-direction:column;align-items:center;justify-content:center;
+          padding:11px 12px;font-size:14px;text-align:center;border-radius:12px;}
+    /* A lone trailing option (e.g. odd count) spans the full width */
+    .calc .opts input:last-of-type:nth-of-type(odd) + label{grid-column:1 / -1;}
+    /* Delivery speed: time moves to its own line in a smaller, lighter font */
+    .calc .opts-speed .time{display:block;font-size:11.5px;opacity:.7;margin-top:2px;}
+  }
   .calc input[type=number]{width:100%;font-size:15px;font-family:inherit;color:var(--ink);
         background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:13px 14px;}
   .calc input[type=number]:focus{outline:none;border-color:var(--brand2);
@@ -261,16 +278,6 @@
   footer a:hover{color:#fff;text-decoration:underline;}
   footer .reg{margin-top:30px;padding-top:20px;border-top:1px solid rgba(255,255,255,.18);
               font-size:13px;color:#aebfd4;}
-
-  /* Floating mobile call button */
-  .float-call{position:fixed;bottom:20px;right:20px;z-index:60;background:var(--accent);color:#fff;
-              width:60px;height:60px;border-radius:50%;display:none;align-items:center;justify-content:center;
-              font-size:26px;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.3);
-              transition:opacity .25s ease,transform .25s ease;}
-  /* Hide the floating button while a section with its own call CTA is on screen */
-  .float-call.hidden{opacity:0;transform:scale(.6);pointer-events:none;}
-  @media(prefers-reduced-motion:reduce){.float-call{transition:none}}
-  @media(max-width:760px){.float-call{display:flex}}
 </style>
 
 <script>
@@ -337,7 +344,7 @@
 <!-- NAV -->
 <header class="nav">
   <div class="wrap">
-    <div class="brand">Ing. Milan Valigurský<small>súdny znalec · odhad hodnoty nehnuteľností</small></div>
+    <div class="brand">Ing. Milan Valigurský<small>súdny znalec · odhad <span class="brand-long">hodnoty </span>nehnuteľností</small></div>
     <nav class="links">
       <a href="#kedy">Kedy posudok</a>
       <a href="#kalkulacka">Cena posudku</a>
@@ -452,9 +459,9 @@
 
       <div class="field">
         <span class="q" id="lbl-speed" style="display:block;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:10px;">Termín dodania</span>
-        <div class="opts" role="radiogroup" aria-labelledby="lbl-speed">
-          <input type="radio" name="speed" id="s-bezny" value="bezny" checked><label for="s-bezny">Bežný (cca 5–10 dní)</label>
-          <input type="radio" name="speed" id="s-expres" value="expres"><label for="s-expres">Expresný (do 48 h)</label>
+        <div class="opts opts-speed" role="radiogroup" aria-labelledby="lbl-speed">
+          <input type="radio" name="speed" id="s-bezny" value="bezny" checked><label for="s-bezny">Bežný <span class="time">cca 5–10 dní</span></label>
+          <input type="radio" name="speed" id="s-expres" value="expres"><label for="s-expres">Expresný <span class="time">do 48 h</span></label>
         </div>
       </div>
 
@@ -560,8 +567,6 @@
   </div>
 </footer>
 
-<a class="float-call" href="tel:+421907816517" aria-label="Zavolať"><span aria-hidden="true">📞</span></a>
-
 <script>
   // Phone call tracking
   document.querySelectorAll('a[href^="tel:"]').forEach(function(el) {
@@ -649,15 +654,15 @@
       komercia: { floor: true,  land: true  },
     };
 
-    // Base prices (EUR, incl. VAT) per property type
-    var BASE = { byt: 180, dom: 250, pozemok: 150, komercia: 320 };
+    // Base prices (EUR, incl. VAT) per property type — typical SK market rates
+    var BASE = { byt: 160, dom: 240, pozemok: 140, komercia: 350 };
 
     // Built / floor area drives the bulk of the work → affects the whole range
     function floorSurcharge(area) {
       if (isNaN(area) || area <= 0) return 0;
-      if (area >= 500) return 200;
-      if (area > 200) return 140;
-      if (area > 120) return 80;
+      if (area >= 500) return 260;
+      if (area > 200) return 160;
+      if (area > 120) return 90;
       if (area > 70) return 40;
       return 0;
     }
@@ -689,7 +694,7 @@
       // Land only raises the upper limit, slowly
       if (cfg.land) high += landSurchargeHigh(land);
 
-      var mult = speed === 'expres' ? 1.4 : 1;
+      var mult = speed === 'expres' ? 1.35 : 1;
       low *= mult;
       high *= mult;
 
@@ -772,6 +777,10 @@
     }
 
     btn.addEventListener('click', function(){
+      // Copying a contact detail is a silent conversion action — track it
+      posthog.capture('contact_copied', {
+        contact_type: /@/.test(text) ? 'email' : 'phone',
+      });
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(flashCopied).catch(function(){ legacyCopy(text, flashCopied); });
       } else {
@@ -792,20 +801,6 @@
       document.body.removeChild(ta);
       done();
     } catch (e) { /* copy not supported — silently ignore */ }
-  }
-
-  // Hide the floating call button while a section with its own call CTA is visible
-  var floatCall = document.querySelector('.float-call');
-  if (floatCall && 'IntersectionObserver' in window) {
-    var ownCta = [document.querySelector('.hero'), document.getElementById('kontakt')].filter(Boolean);
-    var visible = new Set();
-    var fcObserver = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if (entry.isIntersecting) visible.add(entry.target); else visible.delete(entry.target);
-      });
-      floatCall.classList.toggle('hidden', visible.size > 0);
-    }, { threshold: 0.2 });
-    ownCta.forEach(function(el){ fcObserver.observe(el); });
   }
 </script>
 </body>
