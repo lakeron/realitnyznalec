@@ -150,7 +150,13 @@
     updateConsentStatus();
     updateConsentLayout();
     if (typeof ResizeObserver === 'function') new ResizeObserver(updateConsentLayout).observe(panel);
-    window.addEventListener('resize', updateConsentLayout);
+    window.addEventListener('resize', function () {
+      updateConsentLayout();
+      var focused = document.activeElement;
+      if (focused && focused.matches('a,button,input,select,textarea,summary')) {
+        revealFocusedControl({ target: focused });
+      }
+    });
     document.addEventListener('focusin', revealFocusedControl);
     panel.querySelector('[data-consent-deny]').addEventListener('click', function () { choose('denied'); });
     panel.querySelector('[data-consent-accept]').addEventListener('click', function () { choose('granted'); });
