@@ -154,7 +154,8 @@
       updateConsentLayout();
       var focused = document.activeElement;
       if (focused && focused.matches('a,button,input,select,textarea,summary')) {
-        revealFocusedControl({ target: focused });
+        if (panel.contains(focused)) focused.scrollIntoView({ block: 'center', behavior: 'instant' });
+        else revealFocusedControl({ target: focused });
       }
     });
     document.addEventListener('focusin', revealFocusedControl);
