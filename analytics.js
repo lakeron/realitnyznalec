@@ -6,6 +6,9 @@
   var consentMaxAge = 180 * 24 * 60 * 60 * 1000;
   var production = location.protocol === 'https:' && location.hostname === 'realitnyznalec.sk';
   var consent = readConsent();
+  var allowedEvents = ['$pageview', '$pageleave', 'phone_call_clicked', 'email_clicked',
+    'whatsapp_clicked', 'contact_copied', 'faq_expanded', 'quote_requested',
+    'cta_band_viewed', 'price_calculator_used', 'price_estimate_cta_clicked'];
   var started = false;
   var panel;
   var previousFocus;
@@ -54,11 +57,12 @@
     } catch (e) { return ''; }
   }
 
-  function cleanProperties(properties) {
-    if (!properties || typeof properties !== 'object') return;
+  function cleanProperties(properties, depth) {
+    depth = depth || 0;
+    if (!properties || typeof properties !== 'object' || depth > 8) return;
     Object.keys(properties).forEach(function (key) {
       if (/url$|referrer$/i.test(key)) properties[key] = cleanUrl(properties[key]);
-      if (key === '$set' || key === '$set_once') cleanProperties(properties[key]);
+      if (properties[key] && typeof properties[key] === 'object') cleanProperties(properties[key], depth + 1);
     });
   }
 
@@ -135,6 +139,8 @@
       capture_pageleave: true,
       autocapture: false,
       capture_dead_clicks: false,
+      capture_heatmaps: false,
+      capture_performance: false,
       person_profiles: 'identified_only',
       cookie_expiration: 30,
       secure_cookie: true,
@@ -145,7 +151,7 @@
       mask_all_text: true,
       disable_session_recording: true,
       before_send: function (event) {
-        if (!hasConsent()) return null;
+        if (!hasConsent() || allowedEvents.indexOf(event.event) === -1) return null;
         cleanProperties(event.properties);
         return event;
       },
