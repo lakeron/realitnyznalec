@@ -6,6 +6,7 @@
   <title>Ochrana súkromia a cookies | realitnyznalec.sk</title>
   <meta name="description" content="Informácie o ochrane súkromia, dobrovoľnom meraní návštevnosti a zmene súhlasu s analytikou na realitnyznalec.sk.">
   <link rel="canonical" href="https://realitnyznalec.sk/privacy.html">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="96x96">
   <meta property="og:title" content="Ochrana súkromia a cookies | realitnyznalec.sk">
   <meta property="og:description" content="Ako používame dobrovoľnú analytiku a ako môžete zmeniť svoj súhlas.">
   <meta property="og:type" content="website">
@@ -48,7 +49,7 @@
     footer p{margin:0}
     @media(max-width:520px){header .wrap{align-items:flex-start;flex-direction:column;gap:6px}.hero{padding:36px 0}.settings{padding:20px}.button{width:100%}}
   </style>
-  <script src="/analytics.js" defer></script>
+  <script src="/site-settings.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#obsah">Preskočiť na obsah</a>
@@ -98,7 +99,7 @@
     <section class="settings" id="analytics-settings" aria-labelledby="suhlas">
       <h2 id="suhlas">Zmeniť alebo odvolať súhlas</h2>
       <p>Súhlas s analytikou je dobrovoľný a môžete ho kedykoľvek zmeniť. Odvolanie zastaví ďalšie meranie; nemení spracúvanie, ktoré prebehlo pred odvolaním.</p>
-      <button class="button" type="button" id="privacy-settings">Nastavenia analytiky</button>
+      <button class="button" type="button" id="privacy-settings" data-consent-open>Nastavenia analytiky</button>
       <p class="help">V nastaveniach vyberte „Odmietnuť analytiku“. Ak je JavaScript vypnutý, analytika sa nespúšťa. <a href="/#analytics-settings">Nastavenia na hlavnej stránke</a>.</p>
     </section>
 
@@ -120,14 +121,5 @@
       <p>© 2026 realitnyznalec.sk — Ing. Milan Valigurský · <a href="/">Hlavná stránka</a></p>
     </div>
   </footer>
-  <script>
-    document.getElementById('privacy-settings').addEventListener('click', function () {
-      if (window.realitnyAnalytics && typeof window.realitnyAnalytics.showConsentSettings === 'function') {
-        window.realitnyAnalytics.showConsentSettings();
-      } else {
-        window.location.href = '/#analytics-settings';
-      }
-    });
-  </script>
 </body>
 </html>

@@ -29,12 +29,17 @@ PostHog spravuje overenie domény, TLS certifikát a jeho obnovovanie.
 Zmena stavu v organizácii má poradie **Waiting → Issuing → Live**.
 
 Stav **Live** bol potvrdený 14. 10. 2026 v PostHogu. Produkčné nastavenie
-v `analytics.js`:
+v `analytics-capture.js`:
 
 ```js
 api_host: 'https://e.realitnyznalec.sk',
 ui_host: 'https://eu.posthog.com',
 ```
+
+Nastavenia súhlasu obsluhuje `site-settings.js`; voliteľný modul
+`analytics-capture.js` načíta až po súhlase. Pôvodný `analytics.js` zostáva
+zachovaný pre návštevníkov so starým HTML v cache. Nový názov modulu zabraňuje
+tomu, aby nový správca súhlasu načítal starý kompletný skript z cache.
 
 Aj SDK súbor `/static/array.js` načítavať z rovnakého hostiteľa. Spravovaná
 proxy obslúži SDK, konfiguráciu aj udalosti; GitHub Pages nepotrebuje server
