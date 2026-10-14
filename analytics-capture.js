@@ -119,6 +119,7 @@
         mask_all_element_attributes: true,
         mask_all_text: true,
         disable_session_recording: true,
+        disable_surveys: true,
         before_send: function (event) {
           if (!hasConsent() || allowedEvents.indexOf(event.event) === -1) return null;
           cleanProperties(event.properties);
