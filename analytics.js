@@ -47,6 +47,7 @@
 
   function cleanUrl(value) {
     if (typeof value !== 'string') return value;
+    if (value === '' || value === '$direct') return value;
     try {
       var url = new URL(value, location.origin);
       return url.protocol === 'http:' || url.protocol === 'https:' ? url.origin + url.pathname : '';
@@ -133,6 +134,7 @@
       capture_pageview: false,
       capture_pageleave: true,
       autocapture: false,
+      capture_dead_clicks: false,
       person_profiles: 'identified_only',
       cookie_expiration: 30,
       secure_cookie: true,
